@@ -45,9 +45,9 @@ class GeneticAlgorithmL3:
         sorted_pop = sorted(self.population, key=lambda item: item[2], reverse=self.min_func)
         for i in range(len(sorted_pop)):
             if random() < self.mut_chance:
-                sorted_pop[i][0] += (random() - 0.5) * ((self.generations - cur_gen) / self.generations)
+                sorted_pop[i][0] += (random() - self.mut_chance) * ((self.generations - cur_gen) / self.generations)
             if random() < self.mut_chance:
-                sorted_pop[i][1] += (random() - 0.5) * ((self.generations - cur_gen) / self.generations)
+                sorted_pop[i][1] += (random() - self.mut_chance) * ((self.generations - cur_gen) / self.generations)
             sorted_pop[i][2] = self.func(sorted_pop[i][0], sorted_pop[i][1])
 
         self.population = sorted_pop
