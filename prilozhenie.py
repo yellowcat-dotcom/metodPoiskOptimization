@@ -10,8 +10,7 @@ import matplotlib.animation as animation
 from tkinter.ttk import Combobox, Notebook, Style
 import genetic_algorithm_l3
 import pchely
-import functools
-
+import beetest
 def click_but1():
     x1 = float(input1.get())
     x2 = float(input2.get())
@@ -199,6 +198,7 @@ def draw_lab_4(name):
         x,y,z = make_rast_lab_4()
     if name=="Швефеля":
         x, y, z = make_shvefe_lab_4()
+
     fig = plt.Figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -234,13 +234,15 @@ def draw_lab_4(name):
 def draw_lab_5(name):
     # done
     if name=="Розенброка":
-        x, y, z = make_sphere_lab_4()
+        x, y, z = make_data_lab_3()
 
     # from before lab 4
     if name=="Химмельблау":
         x,y,z = make_rast_lab_4()
+
+    # done
     if name=="Растригина":
-        x, y, z = make_shvefe_lab_4()
+        x, y, z = make_rast_lab_4()
 
 
     fig = plt.Figure()
@@ -248,30 +250,39 @@ def draw_lab_5(name):
 
     ax.plot_surface(x, y, z, cmap='viridis', alpha=0.3)  # Отобразить поверхность функции
 
-    canvas = FigureCanvasTkAgg(fig, master=frame4)
+    canvas = FigureCanvasTkAgg(fig, master=frame5)
     canvas_widget = canvas.get_tk_widget()
     canvas_widget.pack()
     canvas_widget.place(x=400, y=0)
 
-    result_label_tab_4 = ttk.Label(frame4, text="", font=("Arial Bold", 15))
-    result_label_tab_4.pack(anchor=NW, padx=60, pady=0)
+    result_label_tab_5 = ttk.Label(frame5, text="", font=("Arial Bold", 15))
+    result_label_tab_5.pack(anchor=NW, padx=60, pady=0)
 
-    # Предполагается, что pchely.lab4_rastrigin() возвращает результаты для x_2, y_2, z_2
-    if name=="Сферы":
+
+    if name=="Розенброка":
         result = pchely.lab4_sphere()
-    if name=="Растригина":
+    if name=="Химмельблау":
         result = pchely.lab4_rastrigin()
-    if name=="Швефеля":
+    if name=="Растригина":
         result = pchely.lab4_schwefel()
 
-    x_2 = result[1]
-    y_2 = result[2]
-    z_2 = result[3]
 
-    result_label_tab_4.config(text="Точка: (" + str("%.10f" % x_2[-1]) + ",\n " +
-                                            str("%.10f" % y_2[-1]) + ",\n " +
-                                            str("%.10f" % z_2[-1]) + ")")
-    ax.scatter(x_2[-1], y_2[-1], z_2[-1], c='r', marker='o',label='Points')
+    result = beetest.bee_algorithm(0, 300, 30, 10, 15, 5, 1, 2000, 10)
+
+    # Corrected variable names
+    x_result, y_result, z_result = [], [], []
+
+    x_result.append(result[0][0])
+    y_result.append(result[0][1])
+    z_result.append(result[1])
+
+    print(x_result, y_result, z_result)
+
+    ax.scatter(x_result[-1], y_result[-1], y_result[-1], c='r', marker='o', label='Points')
+
+    result_label_tab_5.config(text="Точка: (" + str("%.10f" % x_result[-1]) + ",\n " +
+                                            str("%.10f" % y_result[-1]) + ",\n " +
+                                            str("%.10f" % z_result[0]) + ")")
 
     root.mainloop()
 
@@ -434,7 +445,7 @@ values = ["Розенброка", "Химмельблау", "Растригин�
 combobox = ttk.Combobox(frame5,state="readonly", values=values, font="Verdana 12 bold")
 combobox.set("Выберите функцию")  # Значение по умолчанию
 combobox.pack(anchor=NW,padx= 60, pady= 30)
-combobox.bind("<<ComboboxSelected>>", on_combobox_select)
+combobox.bind("<<ComboboxSelected>>", on_combobox_select_5_lab)
 
 
 
