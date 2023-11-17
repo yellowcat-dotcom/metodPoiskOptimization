@@ -7,10 +7,10 @@ import task1
 import task2
 import task2_2
 import matplotlib.animation as animation
-
-from PIL import Image, ImageTk
 from tkinter.ttk import Combobox, Notebook, Style
 import genetic_algorithm_l3
+import pchely
+import functools
 
 def click_but1():
     x1 = float(input1.get())
@@ -172,9 +172,64 @@ def draw_lab_3():
 
     root.mainloop()
 
+def make_sphere_lab_4():
+    x = np.linspace(-5, 5, 100)
+    y = np.linspace(-5, 5, 100)
+    x_grid, y_grid = np.meshgrid(x, y)
+    z = pchely.sphere_function(x_grid, y_grid)
+    return x_grid, y_grid, z
 
+def make_rast_lab_4():
+    x = np.linspace(-5, 5, 100)
+    y = np.linspace(-5, 5, 100)
+    x_grid, y_grid = np.meshgrid(x, y)
+    z=pchely.rastrigin_function(x_grid,y_grid)
+    return x_grid, y_grid, z
 
+def make_shvefe_lab_4():
+    x = np.linspace(-1000,1000, 1000)
+    y = np.linspace(-1000,1000, 1000)
+    x_grid, y_grid = np.meshgrid(x, y)
+    z=pchely.schwefel_function(x_grid,y_grid)
+    return x_grid, y_grid, z
+def draw_lab_4(name):
+    if name=="Сферы":
+        x, y, z = make_sphere_lab_4()
+    if name=="Растригина":
+        x,y,z = make_rast_lab_4()
+    if name=="Швефеля":
+        x, y, z = make_shvefe_lab_4()
+    fig = plt.Figure()
+    ax = fig.add_subplot(111, projection='3d')
 
+    ax.plot_surface(x, y, z, cmap='viridis', alpha=0.3)  # Отобразить поверхность функции
+
+    canvas = FigureCanvasTkAgg(fig, master=frame4)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack()
+    canvas_widget.place(x=400, y=0)
+
+    result_label_tab_4 = ttk.Label(frame4, text="", font=("Arial Bold", 15))
+    result_label_tab_4.pack(anchor=NW, padx=60, pady=0)
+
+    # Предполагается, что pchely.lab4_rastrigin() возвращает результаты для x_2, y_2, z_2
+    if name=="Сферы":
+        result = pchely.lab4_sphere()
+    if name=="Растригина":
+        result = pchely.lab4_rastrigin()
+    if name=="Швефеля":
+        result = pchely.lab4_schwefel()
+
+    x_2 = result[1]
+    y_2 = result[2]
+    z_2 = result[3]
+
+    result_label_tab_4.config(text="Точка: (" + str("%.10f" % x_2[-1]) + ",\n " +
+                                            str("%.10f" % y_2[-1]) + ",\n " +
+                                            str("%.10f" % z_2[-1]) + ")")
+    ax.scatter(x_2[-1], y_2[-1], z_2[-1], c='r', marker='o',label='Points')
+
+    root.mainloop()
 
 
 
@@ -190,15 +245,19 @@ notebook.pack(expand=True, fill=BOTH)
 frame1 = ttk.Frame(notebook)
 frame2 = ttk.Frame(notebook)
 frame3 = ttk.Frame(notebook)
+frame4 = ttk.Frame(notebook)
 
 frame1.pack(fill=BOTH, expand=True)
 frame2.pack(fill=BOTH, expand=True)
 frame3.pack(fill=BOTH, expand=True)
+frame4.pack(fill=BOTH, expand=True)
 
 # добавляем фреймы в качестве вкладок
 notebook.add(frame1, text="ЛР_1")
 notebook.add(frame2, text="ЛР_2")
 notebook.add(frame3, text="ЛР_3")
+notebook.add(frame4, text="ЛР_4")
+
 
 #                ВКЛАДКА 1
 label1= ttk.Label(frame1,text="Введите данные:",font=("Aria Bold",20))
@@ -299,14 +358,20 @@ btn_tab_3.pack(anchor=NW,padx= 60, pady= 0)
 combo_tab_3 = Combobox(frame3)
 combo_tab_3['values'] = ("Min", "Max")
 combo_tab_3.set("Min")
+#Лаба 4
+def on_combobox_select(event):
+    selected_value = combobox.get()
+    print(selected_value)
+    draw_lab_4(str(selected_value))
+frame_4_tab1 = Label(frame4, text="Алгоритм роя частиц", font="Verdana 12 bold")
+frame_4_tab1.pack(anchor=NW,padx= 60, pady= 10)
+values = ["Сферы", "Растригина", "Швефеля"]
+combobox = ttk.Combobox(frame4,state="readonly", values=values, font="Verdana 12 bold")
+combobox.set("Выберите функцию")  # Значение по умолчанию
+combobox.pack(anchor=NW,padx= 60, pady= 30)
+combobox.bind("<<ComboboxSelected>>", on_combobox_select)
 
-
-
-
-
-
-
-
-
+# btn_tab_4 = Button(frame4, text="Выполнить", foreground="black", command=draw_lab_4)
+# btn_tab_4.pack(anchor=NW,padx= 60, pady= 0)
 
 root.mainloop()
