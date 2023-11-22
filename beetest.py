@@ -35,13 +35,17 @@ def bee_algorithm(num_funct,scoutbeecount,bestbeecount,selectedbeecount,selsites
 	# Класс пчел, который будет использоваться в алгоритме
 	
 	if num_funct==0:
-		beetype = beeexamples.spherebee
+		beetype = beeexamples.rosenbrockbee
+	##NNEEWW
 	elif num_funct==1:
-		beetype = beeexamples.dejongbee
+		beetype = beeexamples.rastriginbee
 	elif num_funct==2:
 		beetype = beeexamples.goldsteinbee
 	elif num_funct==3:
-		beetype = beeexamples.rosenbrockbee
+		beetype = beeexamples.dejongbee
+
+
+
 
 	#beetype = beeexamples.testbee
 	#beetype = beeexamples.funcbee

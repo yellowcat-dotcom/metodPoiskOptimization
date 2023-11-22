@@ -260,14 +260,16 @@ def draw_lab_5(name):
 
 
     if name=="Розенброка":
-        result = pchely.lab4_sphere()
+        result = beetest.bee_algorithm(0, 300, 30, 10, 15, 5, 1, 2000, 10)
     if name=="Химмельблау":
         result = pchely.lab4_rastrigin()
+
+
     if name=="Растригина":
-        result = pchely.lab4_schwefel()
+        result = beetest.bee_algorithm(1, 300, 30, 10, 15, 5, 1, 2000, 10)
 
 
-    result = beetest.bee_algorithm(0, 300, 30, 10, 15, 5, 1, 2000, 10)
+
 
     # Corrected variable names
     x_result, y_result, z_result = [], [], []
