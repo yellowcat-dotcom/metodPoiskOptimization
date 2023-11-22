@@ -4,22 +4,42 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+def himmelblau(x, y):
+    return (x**2 + y - 11)**2 + (x + y**2 - 7)**2
 
-def rosenbrock(x, y):
-    return (1.0 - x) ** 2 + 100.0 * (y - x * x) ** 2
-
-def make_rosenbrock_lab_5():
+def make_himmelblau_lab_5():
     x = np.linspace(-5, 5, 100)
     y = np.linspace(-5, 5, 100)
     x_grid, y_grid = np.meshgrid(x, y)
-    z = rosenbrock(x_grid, y_grid)  #z = rosenbrock2(x_grid, y_grid)
+    z = himmelblau(x_grid, y_grid)
     return x_grid, y_grid, z
 
-x, y, z = make_rosenbrock_lab_5()
+def find_minima(num_minima=4, threshold=1e-3):
+    minima = []
+
+    while len(minima) < num_minima:
+        result = beetest.bee_algorithm(2, 300, 30, 10, 15, 5, 1, 2000, 10)
+        x_result, y_result = result[0][0], result[0][1]
+        z_result = himmelblau(x_result, y_result)
+
+        # Check if the new minimum is close to an existing minimum
+        close_to_existing = any(
+            np.linalg.norm(np.array([x_result, y_result, z_result]) - np.array(existing_min)) < threshold
+            for existing_min in minima
+        )
+
+        if not close_to_existing:
+            minima.append((round(x_result, 6), round(y_result, 6), round(z_result, 6)))
+
+    return minima
+
+minima_list = find_minima()
+
+x, y, z = make_himmelblau_lab_5()
 
 # Create the main Tkinter window
 root = Tk()
-root.title("Your Window Title")
+root.title("Himmelblau Minima Visualization")
 
 # Create a matplotlib figure
 fig = plt.Figure()
@@ -31,24 +51,15 @@ canvas = FigureCanvasTkAgg(fig, master=root)
 canvas_widget = canvas.get_tk_widget()
 canvas_widget.pack(side=TOP, fill=BOTH, expand=1)
 
-number_of_points = 1000
-left_border, right_border = -100, 100
+# Plot all found minima
+minima_scatter = ax.scatter([], [], [], c='r', marker='o', label='Minima')
 
-result = beetest.bee_algorithm(0, 300, 30, 10, 15, 5, 1, 2000, 10)
+for minima in minima_list:
+    ax.scatter(minima[0], minima[1], minima[2], c='r', marker='o')
+    print(minima[0], minima[1], minima[2])
 
-# Corrected variable names
-x_result, y_result, z_result = [], [], []
-x_result.append(result[0][0])
-y_result.append(result[0][1])
-y_result.append(result[1])
-
-print(x_result, y_result, z_result)
-
-ax.scatter(x_result[-1], y_result[-1], y_result[-1], c='r', marker='o',label='Points')
+# Update the scatter plot data
+minima_scatter._offsets3d = (minima_scatter._offsets3d[0], minima_scatter._offsets3d[1], minima_scatter._offsets3d[2])
 
 # Start the Tkinter event loop
 root.mainloop()
-
-
-
-

@@ -191,6 +191,8 @@ def make_shvefe_lab_4():
     x_grid, y_grid = np.meshgrid(x, y)
     z=pchely.schwefel_function(x_grid,y_grid)
     return x_grid, y_grid, z
+
+
 def draw_lab_4(name):
     if name=="Сферы":
         x, y, z = make_sphere_lab_4()

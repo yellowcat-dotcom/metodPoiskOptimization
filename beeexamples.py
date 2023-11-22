@@ -184,7 +184,37 @@ class rastriginbee(pybee.floatbee):
 
 ###################################################
 ###### NNNNEEEEWWWWW
+class himmelblaubee(pybee.floatbee):
+    """Himmelblau Function"""
 
+    # Number of coordinates
+    count = 2
+
+    @staticmethod
+    def getstartrange():
+        return [-5.0] * himmelblaubee.count
+
+    @staticmethod
+    def getrangekoeff():
+        return [0.98] * himmelblaubee.count
+
+    def __init__(self):
+        pybee.floatbee.__init__(self)
+
+        self.minval = [-5.0] * himmelblaubee.count
+        self.maxval = [5.0] * himmelblaubee.count
+
+        self.position = [random.uniform(self.minval[n], self.maxval[n]) for n in range(himmelblaubee.count)]
+        self.calcfitness()
+
+    def calcfitness(self):
+        """Calculate the fitness function. This method needs to be overloaded in the derived class.
+        The function does not return the value of the fitness function, only sets the self.fitness member.
+        This function should be called after each change in the bee's coordinates."""
+
+        self.fitness = 0.0
+        x, y = self.position[0], self.position[1]
+        self.fitness += -((x**2 + y - 11)**2 + (x + y**2 - 7)**2)
 ###### NNNNEEEEWWWWW
 ###################################################
 

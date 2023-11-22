@@ -36,11 +36,11 @@ def bee_algorithm(num_funct,scoutbeecount,bestbeecount,selectedbeecount,selsites
 	
 	if num_funct==0:
 		beetype = beeexamples.rosenbrockbee
-	##NNEEWW
 	elif num_funct==1:
 		beetype = beeexamples.rastriginbee
+		# NEW !!!!!!
 	elif num_funct==2:
-		beetype = beeexamples.goldsteinbee
+		beetype = beeexamples.himmelblaubee
 	elif num_funct==3:
 		beetype = beeexamples.dejongbee
 
