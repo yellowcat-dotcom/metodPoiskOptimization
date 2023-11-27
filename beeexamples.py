@@ -4,7 +4,7 @@ import math
 
 import pybee
 
-
+# Определение класса пчелы для функции сферы
 class spherebee(pybee.floatbee):
     """Функция - сумма квадратов по каждой координате"""
 
@@ -39,7 +39,7 @@ class spherebee(pybee.floatbee):
 
 
 ###################################################
-
+# Определение класса пчелы для тестовой функции
 class dejongbee(pybee.floatbee):
     """Функция De Jong"""
 
@@ -74,7 +74,7 @@ class dejongbee(pybee.floatbee):
 
 
 ###################################################
-
+# Определение класса пчелы для поиска коэффициентов степенной функции
 class goldsteinbee(pybee.floatbee):
     """Функция Goldstein & Price"""
 
@@ -112,7 +112,7 @@ class goldsteinbee(pybee.floatbee):
 
 
 ###################################################
-
+# Определение класса пчелы для функции Rosenbrock
 class rosenbrockbee(pybee.floatbee):
     """Функция Rosenbrock"""
 

@@ -11,6 +11,8 @@ from tkinter.ttk import Combobox, Notebook, Style
 import genetic_algorithm_l3
 import pchely
 import beetest
+import imunno_alg
+import bacterii
 def click_but1():
     x1 = float(input1.get())
     x2 = float(input2.get())
@@ -192,6 +194,48 @@ def make_shvefe_lab_4():
     z=pchely.schwefel_function(x_grid,y_grid)
     return x_grid, y_grid, z
 
+def make_roz_lab_6():
+    x = np.linspace(-5, 5, 100)
+    y = np.linspace(-5, 5, 100)
+    x_grid, y_grid = np.meshgrid(x, y)
+    z=imunno_alg.rosenbrock(x_grid,y_grid)
+    return x_grid, y_grid, z
+def make_sfere_lab_7():
+    x = np.linspace(-5, 5, 100)
+    y = np.linspace(-5, 5, 100)
+    x_grid, y_grid = np.meshgrid(x, y)
+    z=bacterii.sphere(x_grid,y_grid)
+    return x_grid, y_grid, z
+
+def himmelblau(x, y):
+    return (x**2 + y - 11)**2 + (x + y**2 - 7)**2
+
+def make_himmelblau_lab_5():
+    x = np.linspace(-5, 5, 100)
+    y = np.linspace(-5, 5, 100)
+    x_grid, y_grid = np.meshgrid(x, y)
+    z = himmelblau(x_grid, y_grid)
+    return x_grid, y_grid, z
+
+def find_minima(num_minima=4, threshold=1e-3):
+    minima = []
+
+    while len(minima) < num_minima:
+        result = beetest.bee_algorithm(2, 300, 30, 10, 15, 5, 1, 2000, 10)
+        x_result, y_result = result[0][0], result[0][1]
+        z_result = himmelblau(x_result, y_result)
+
+        # Check if the new minimum is close to an existing minimum
+        close_to_existing = any(
+            np.linalg.norm(np.array([x_result, y_result, z_result]) - np.array(existing_min)) < threshold
+            for existing_min in minima
+        )
+
+        if not close_to_existing:
+            minima.append((round(x_result, 6), round(y_result, 6), round(z_result, 6)))
+
+    return minima
+
 
 def draw_lab_4(name):
     if name=="Сферы":
@@ -240,7 +284,8 @@ def draw_lab_5(name):
 
     # from before lab 4
     if name=="Химмельблау":
-        x,y,z = make_rast_lab_4()
+        x,y,z = make_himmelblau_lab_5()
+        minima_list = find_minima()
 
     # done
     if name=="Растригина":
@@ -263,33 +308,107 @@ def draw_lab_5(name):
 
     if name=="Розенброка":
         result = beetest.bee_algorithm(0, 300, 30, 10, 15, 5, 1, 2000, 10)
-    if name=="Химмельблау":
-        result = pchely.lab4_rastrigin()
+        x_result, y_result, z_result = [], [], []
 
+        x_result.append(result[0][0])
+        y_result.append(result[0][1])
+        z_result.append(result[1])
+
+        print(x_result, y_result, z_result)
+
+        ax.scatter(x_result[-1], y_result[-1], y_result[-1], c='r', marker='o', label='Points')
+
+        result_label_tab_5.config(text="Точка: (" + str("%.10f" % x_result[-1]) + ",\n " +
+                                       str("%.10f" % y_result[-1]) + ",\n " +
+                                       str("%.10f" % z_result[0]) + ")")
+    if name=="Химмельблау":
+        minima_scatter = ax.scatter([], [], [], c='r', marker='o', label='Minima')
+        text=''
+        for minima in minima_list:
+            ax.scatter(minima[0], minima[1], minima[2], c='r', marker='o')
+            text+=f'точка) {minima[0]}; {minima[1]}; {minima[2]}\n'
+            print(minima[0], minima[1], minima[2])
+
+        result_label_tab_5.config(text=text)
+
+
+
+        # Update the scatter plot data
+        minima_scatter._offsets3d = (minima_scatter._offsets3d[0], minima_scatter._offsets3d[1], minima_scatter._offsets3d[2])
 
     if name=="Растригина":
         result = beetest.bee_algorithm(1, 300, 30, 10, 15, 5, 1, 2000, 10)
+        # Corrected variable names
+        x_result, y_result, z_result = [], [], []
 
+        x_result.append(result[0][0])
+        y_result.append(result[0][1])
+        z_result.append(result[1])
 
+        print(x_result, y_result, z_result)
 
+        ax.scatter(x_result[-1], y_result[-1], y_result[-1], c='r', marker='o', label='Points')
 
-    # Corrected variable names
-    x_result, y_result, z_result = [], [], []
+        result_label_tab_5.config(text="Точка: (" + str("%.10f" % x_result[-1]) + ",\n " +
+                                       str("%.10f" % y_result[-1]) + ",\n " +
+                                       str("%.10f" % z_result[0]) + ")")
 
-    x_result.append(result[0][0])
-    y_result.append(result[0][1])
-    z_result.append(result[1])
+    root.mainloop()
+def draw_lab_6():
+    x, y, z = make_roz_lab_6()
+    result = imunno_alg.immun_algorithm(-6, 6, -6, 6, 100, 50, 10, 5, 7, 0.3, 100, 0.4, 0.4)
+    print(result)
+    fig = plt.Figure()
+    ax = fig.add_subplot(111, projection='3d')
 
-    print(x_result, y_result, z_result)
+    ax.plot_surface(x, y, z, cmap='viridis', alpha=0.3)  # Отобразить поверхность функции
 
-    ax.scatter(x_result[-1], y_result[-1], y_result[-1], c='r', marker='o', label='Points')
+    canvas = FigureCanvasTkAgg(fig, master=frame6)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack()
+    canvas_widget.place(x=400, y=0)
 
-    result_label_tab_5.config(text="Точка: (" + str("%.10f" % x_result[-1]) + ",\n " +
-                                            str("%.10f" % y_result[-1]) + ",\n " +
-                                            str("%.10f" % z_result[0]) + ")")
+    result_label_tab_6 = ttk.Label(frame6, text="", font=("Arial Bold", 15))
+    result_label_tab_6.pack(anchor=NW, padx=60, pady=0)
+
+    x_2 = result[0][0]
+    y_2 = result[0][1]
+    z_2 = result[1]
+
+    result_label_tab_6.config(text="Точка: (" + str("%.10f" % x_2) + ",\n " +
+                                            str("%.10f" % y_2) + ",\n " +
+                                            str("%.10f" % z_2) + ")")
+    ax.scatter(x_2, y_2, z_2, c='r', marker='o',label='Points')
 
     root.mainloop()
 
+def draw_lab_7():
+    x, y, z = make_sfere_lab_7()
+    result = bacterii.bacteria_algorithm(-3, 3, -3, 3, 10, 250, 0.1, 5, 0.1)
+    print(result)
+    fig = plt.Figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.plot_surface(x, y, z, cmap='viridis', alpha=0.3)  # Отобразить поверхность функции
+
+    canvas = FigureCanvasTkAgg(fig, master=frame7)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack()
+    canvas_widget.place(x=400, y=0)
+
+    result_label_tab_6 = ttk.Label(frame7, text="", font=("Arial Bold", 15))
+    result_label_tab_6.pack(anchor=NW, padx=60, pady=0)
+
+    x_2 = result[0][0]
+    y_2 = result[0][1]
+    z_2 = result[1]
+
+    result_label_tab_6.config(text="Точка: (" + str("%.10f" % x_2) + ",\n " +
+                                            str("%.10f" % y_2) + ",\n " +
+                                            str("%.10f" % z_2) + ")")
+    ax.scatter(x_2, y_2, z_2, c='r', marker='o',label='Points')
+
+    root.mainloop()
 
 
 root = Tk()
@@ -306,12 +425,16 @@ frame2 = ttk.Frame(notebook)
 frame3 = ttk.Frame(notebook)
 frame4 = ttk.Frame(notebook)
 frame5 = ttk.Frame(notebook)
+frame6 = ttk.Frame(notebook)
+frame7 = ttk.Frame(notebook)
 
 frame1.pack(fill=BOTH, expand=True)
 frame2.pack(fill=BOTH, expand=True)
 frame3.pack(fill=BOTH, expand=True)
 frame4.pack(fill=BOTH, expand=True)
 frame5.pack(fill=BOTH, expand=True)
+frame6.pack(fill=BOTH, expand=True)
+frame7.pack(fill=BOTH, expand=True)
 
 # добавляем фреймы в качестве вкладок
 notebook.add(frame1, text="ЛР_1")
@@ -319,6 +442,8 @@ notebook.add(frame2, text="ЛР_2")
 notebook.add(frame3, text="ЛР_3")
 notebook.add(frame4, text="ЛР_4")
 notebook.add(frame5, text="ЛР_5")
+notebook.add(frame6, text="ЛР_6")
+notebook.add(frame7, text="ЛР_7")
 
 
 #                ВКЛАДКА 1
@@ -451,6 +576,17 @@ combobox.set("Выберите функцию")  # Значение по умо�
 combobox.pack(anchor=NW,padx= 60, pady= 30)
 combobox.bind("<<ComboboxSelected>>", on_combobox_select_5_lab)
 
+#Вкладка 6
+frame_6_tab1 = Label(frame6, text="Оптимизация искусственной \n имунной сетью", font="Verdana 12 bold")
+frame_6_tab1.pack(anchor=NW,padx= 60, pady= 10)
+btn_tab_6 = Button(frame6, text="Выполнить", foreground="black", command=draw_lab_6)
+btn_tab_6.pack(anchor=NW,padx= 60, pady= 0)
+#Вкладка 7
 
+frame_7_tab1 = Label(frame7, text="Бактериальная оптимизация", font="Verdana 12 bold")
+frame_7_tab1.pack(anchor=NW,padx= 60, pady= 10)
+btn_tab_7 = Button(frame7, text="Выполнить", foreground="black", command=draw_lab_7)
+btn_tab_7.pack(anchor=NW,padx= 60, pady= 0)
+#
 
 root.mainloop()
