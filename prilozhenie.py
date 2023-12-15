@@ -3,6 +3,8 @@ from tkinter import ttk, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+import chernovik
 import task1
 import task2
 import task2_2
@@ -356,8 +358,9 @@ def draw_lab_5(name):
     root.mainloop()
 def draw_lab_6():
     x, y, z = make_roz_lab_6()
-    result = imunno_alg.immun_algorithm(-6, 6, -6, 6, 100, 50, 10, 5, 7, 0.3, 100, 0.4, 0.4)
-    print(result)
+    result = chernovik.immune_system(2, 40, 3, 70, 0.1, 0.3)
+    #result = imunno_alg.immun_algorithm(-6, 6, -6, 6, 100, 50, 10, 5, 7, 0.3, 100, 0.4, 0.4)
+    #print(result)
     fig = plt.Figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -371,12 +374,12 @@ def draw_lab_6():
     result_label_tab_6 = ttk.Label(frame6, text="", font=("Arial Bold", 15))
     result_label_tab_6.pack(anchor=NW, padx=60, pady=0)
 
-    x_2 = result[0][0]
-    y_2 = result[0][1]
-    z_2 = result[1]
+    x_2 = result[1][0]
+    y_2 = result[1][1]
+    z_2 = result[0]
 
-    result_label_tab_6.config(text="Точка: (" + str("%.10f" % x_2) + ",\n " +
-                                            str("%.10f" % y_2) + ",\n " +
+    result_label_tab_6.config(text="Точка: (" + str(x_2) + ",\n " +
+                                            str(y_2) + ",\n " +
                                             str("%.10f" % z_2) + ")")
     ax.scatter(x_2, y_2, z_2, c='r', marker='o',label='Points')
 
@@ -384,7 +387,7 @@ def draw_lab_6():
 
 def draw_lab_7():
     x, y, z = make_sfere_lab_7()
-    result = bacterii.bacteria_algorithm(-3, 3, -3, 3, 10, 250, 0.1, 5, 0.1)
+    result = bacterii.bacteria_algorithm(-3, 3, -3, 3, 10, 350, 0.1, 5, 0.1)
     print(result)
     fig = plt.Figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -427,6 +430,7 @@ frame4 = ttk.Frame(notebook)
 frame5 = ttk.Frame(notebook)
 frame6 = ttk.Frame(notebook)
 frame7 = ttk.Frame(notebook)
+frame8 = ttk.Frame(notebook)
 
 frame1.pack(fill=BOTH, expand=True)
 frame2.pack(fill=BOTH, expand=True)
@@ -435,6 +439,7 @@ frame4.pack(fill=BOTH, expand=True)
 frame5.pack(fill=BOTH, expand=True)
 frame6.pack(fill=BOTH, expand=True)
 frame7.pack(fill=BOTH, expand=True)
+frame8.pack(fill=BOTH, expand=True)
 
 # добавляем фреймы в качестве вкладок
 notebook.add(frame1, text="ЛР_1")
@@ -444,6 +449,7 @@ notebook.add(frame4, text="ЛР_4")
 notebook.add(frame5, text="ЛР_5")
 notebook.add(frame6, text="ЛР_6")
 notebook.add(frame7, text="ЛР_7")
+notebook.add(frame8, text="ЛР_8")
 
 
 #                ВКЛАДКА 1
@@ -587,6 +593,11 @@ frame_7_tab1 = Label(frame7, text="Бактериальная оптимизац
 frame_7_tab1.pack(anchor=NW,padx= 60, pady= 10)
 btn_tab_7 = Button(frame7, text="Выполнить", foreground="black", command=draw_lab_7)
 btn_tab_7.pack(anchor=NW,padx= 60, pady= 0)
-#
+
+
+# ВКЛАДКА 8
+frame_8_tab1 = Label(frame8, text="Гибридная оптимизация", font="Verdana 12 bold")
+frame_8_tab1.pack(anchor=NW,padx= 60, pady= 10)
+
 
 root.mainloop()
