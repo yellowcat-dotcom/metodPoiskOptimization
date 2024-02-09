@@ -414,6 +414,36 @@ def draw_lab_7():
     root.mainloop()
 
 
+def draw_lab_8():
+    x, y, z = make_roz_lab_6()
+    result = chernovik.immune_system(2, 40, 3, 70, 0.1, 0.3)
+    #result = imunno_alg.immun_algorithm(-6, 6, -6, 6, 100, 50, 10, 5, 7, 0.3, 100, 0.4, 0.4)
+    #print(result)
+    fig = plt.Figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.plot_surface(x, y, z, cmap='viridis', alpha=0.3)  # Отобразить поверхность функции
+
+    canvas = FigureCanvasTkAgg(fig, master=frame6)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.pack()
+    canvas_widget.place(x=400, y=0)
+
+    result_label_tab_8 = ttk.Label(frame8, text="", font=("Arial Bold", 15))
+    result_label_tab_8.pack(anchor=NW, padx=60, pady=0)
+
+    x_2 = result[1][0]
+    y_2 = result[1][1]
+    z_2 = result[0]
+
+    result_label_tab_8.config(text="Точка: (" + str(x_2) + ",\n " +
+                                            str(y_2) + ",\n " +
+                                            str("%.10f" % z_2) + ")")
+    ax.scatter(x_2, y_2, z_2, c='r', marker='o',label='Points')
+
+    root.mainloop()
+
+
 root = Tk()
 root.title("LABS")
 root.geometry("1100x650")
@@ -599,5 +629,7 @@ btn_tab_7.pack(anchor=NW,padx= 60, pady= 0)
 frame_8_tab1 = Label(frame8, text="Гибридная оптимизация", font="Verdana 12 bold")
 frame_8_tab1.pack(anchor=NW,padx= 60, pady= 10)
 
+btn_tab_8 = Button(frame8, text="Выполнить", foreground="black", command=draw_lab_8)
+btn_tab_8.pack(anchor=NW,padx= 60, pady= 0)
 
 root.mainloop()

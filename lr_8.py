@@ -1,38 +1,33 @@
+# Импорт библиотек
 import random
+from scipy import optimize
+import quickest_descent
 
-from function import Function
-from quickest_descent import quickest_descent
-
-"""
-значение целевой по числу итераций
-и по времени
-"""
-
-
+# Определение целевой функции Розенброка
 def rosenbrock_function(x, y):
     return (1 - x) ** 2 + 100 * (y - x ** 2) ** 2
 
-
+# Класс для гибридного алгоритма
 class HybridAlgorithm:
     array_steps = []
 
     def __init__(self):
         pass
 
+    # Генерация начальной популяции
     @staticmethod
     def generate_population(num_persons, min_x, max_x, min_y, max_y):
         population = []
         for i in range(num_persons):
             population.append([random.uniform(min_x, max_x), random.uniform(min_y, max_y)])
-
         return population
 
+    # Метод отбора по усечению
     @staticmethod
     def get_selection_by_truncation(num_persons, population):
         new_population = []
         for i in population:
             new_population.append([rosenbrock_function(i[0], i[1]), i[0], i[1]])
-
         new_population.sort()
 
         result = []
@@ -40,42 +35,40 @@ class HybridAlgorithm:
             percent = random.uniform(0, 1)
             person = random.randint(0, int(len(new_population) * percent))
             result.append([new_population[person][1], new_population[person][2]])
-
         return result
 
+    # Метод элитного отбора
     def get_elite_selection(self, num_persons, population):
         new_population = []
         for i in population:
             new_population.append([rosenbrock_function(i[0], i[1]), i[0], i[1]])
-
         new_population.sort()
 
         elite = int(num_persons * 0.1)
-
         result = []
         for i in range(elite):
             result.append([new_population[elite][1], new_population[elite][2]])
 
         n_pop = self.get_selection_by_truncation(num_persons - elite, population[elite:])
         result += n_pop
-
         return result
 
+    # Метод панмиксии
     @staticmethod
     def get_panmixia(population):
         parents_pairs = []
         num_persons = len(population)
-
         for i in range(num_persons):
             second_parent = random.randint(0, num_persons - 1)
             parents_pairs.append([population[i], population[second_parent]])
-
         return parents_pairs
 
+    # Расстояние между особями (генотип)
     @staticmethod
     def get_distance(parent1, parent2):
         return (parent1[0] - parent2[0]) ** 2 + (parent1[1] - parent2[1])
 
+    # Метод инбридинга по генотипу
     def get_inbreeding_by_genotype(self, population):
         parents_pairs = []
         for i in range(len(population)):
@@ -91,6 +84,7 @@ class HybridAlgorithm:
 
         return parents_pairs
 
+    # Метод инбридинга по фенотипу
     @staticmethod
     def get_inbreeding_by_phenotype(population):
         parents_pairs = []
@@ -112,6 +106,7 @@ class HybridAlgorithm:
 
         return parents_pairs
 
+    # Метод аутбридинга по генотипу
     def get_outbriding_by_genotype(self, population):
         parents_pairs = []
         for i in range(len(population)):
@@ -127,6 +122,7 @@ class HybridAlgorithm:
 
         return parents_pairs
 
+    # Метод аутбридинга по фенотипу
     @staticmethod
     def get_outbriding_by_phenotype(population):
         parents_pairs = []
@@ -148,6 +144,7 @@ class HybridAlgorithm:
 
         return parents_pairs
 
+    # Метод интермедиарной рекомбинации
     @staticmethod
     def get_intermediate_recombination(parent_pairs):
         new_population = []
@@ -164,6 +161,7 @@ class HybridAlgorithm:
 
         return new_population
 
+    # Мутация популяции
     @staticmethod
     def mutate(population, chance, step):
         for i in range(len(population)):
@@ -175,6 +173,7 @@ class HybridAlgorithm:
 
         return population
 
+    # Запуск генетического алгоритма
     def run_genetic_algorithm(self, num_persons, min_x, max_x, min_y, max_y, parent_function, selection_function,
                               mutation_chance,
                               mutation_step, num_generations):
@@ -206,9 +205,9 @@ class HybridAlgorithm:
                 p = person
                 mn = rosenbrock_function(person[0], person[1])
 
-        # print(self.array_steps)
         return [[p[0], p[1], mn]]
 
+    # Запуск гибридного алгоритма
     def run_hybrid_algorithm(self, num_persons, min_x, max_x, min_y, max_y, parent_function, selection_function,
                              mutation_chance, mutation_step, num_generations, iterations, ep1, ep2):
 
@@ -217,21 +216,19 @@ class HybridAlgorithm:
 
         min_population = []
         for item in population:
-            #print(quickest_descent(item[0], item[1], iterations, ep1, ep2))
-            min_population.append(quickest_descent(item[0], item[1], iterations, ep1, ep2))
+            min_population.append(quickest_descent.quickest_descent(item[0], item[1], iterations, ep1, ep2))
 
         min_population.sort(key=lambda a: a[1])
-        # return min_population[0]
         return population
 
-
+# Создание объекта класса HybridAlgorithm
 hybrid_algorithm = HybridAlgorithm()
 
-result = hybrid_algorithm.run_hybrid_algorithm(100, -5, 5, -5, 5,
+# Запуск гибридного алгоритма и вывод результатов
+result = hybrid_algorithm.run_hybrid_algorithm(200, -5, 5, -5, 5,
                                                hybrid_algorithm.get_panmixia,
                                                hybrid_algorithm.get_selection_by_truncation,
                                                0.05, 0.1, 5, 100, 0.01, 0.01)
-
-for h in result:
-    print(h)
-#hybrid_algorithm(100, -5,5,-5,5,0,0,0,0.05,0.1,5,   100, 0.01, 0.01)
+print(result)
+# for h in result:
+#     print(h)
